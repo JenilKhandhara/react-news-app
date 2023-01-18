@@ -6,8 +6,8 @@ function App() {
   const [search, setSearch] = useState("")
   return (
     <div className="App">
-      <label> Search Headlines:
-        <input type="text" value={search} onChange={(event) =>  setSearch(event.target.value)}></input>
+      <label htmlFor='search'> Search Headlines:
+        <input id="search" type="text" value={search} onChange={(event) =>  setSearch(event.target.value)}></input>
       </label>
       <NewsList searchNews={search}/>
     </div>
