@@ -49,6 +49,7 @@ export default function NewsList({ searchNews }: NewsListProps) {
               })
             }
           })
+          console.log("here")
           setNewsList(fetchedNews)
           console.log(fetchedNews)
         }
@@ -85,18 +86,15 @@ export default function NewsList({ searchNews }: NewsListProps) {
   }
 
   useEffect(() => {
-    window.addEventListener("scroll", handelInfiniteScroll);
-    return () => {
-      window.removeEventListener("scroll", handelInfiniteScroll)
-    }
-  }, [])
-
-  useEffect(() => {
     updateNewsList()
   }, [page])
 
   useEffect(() => {
     updateSearchResult()
+    window.addEventListener("scroll", handelInfiniteScroll);
+    return () => {
+      window.removeEventListener("scroll", handelInfiniteScroll)
+    }
   }, [searchNews])
 
   return (
