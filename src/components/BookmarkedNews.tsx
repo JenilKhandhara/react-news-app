@@ -28,17 +28,16 @@ function BookmarkedNews({ bookmarkedNews, removeFromBookmarkedNews }: PropsType)
           listStyle: 'none'
         }}>
         {bookmarkedNews.map( news => 
-          <div key={news.url} >
-            <hr />
+          <li
+            key={news.url}
+          >
             <button onClick={() => removeFromBookmarkedNews(news)}>Unbookmark</button>
-            <li  
-            onClick={() => {
+            <div onClick={() => {
               window.location.href = news.url
-              }}
-            >
+              }}>
               <News news={news}/>
-            </li>
-          </div>
+            </div>
+          </li>
         )}
     </ul>
   </>
