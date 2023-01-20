@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import NewsType from '../types/NewsType'
 import News from './News'
 import { getNewsHeadlines } from '../data/NewsApi'
@@ -29,7 +29,6 @@ const PAGESIZE = 10
 function NewsList({ searchNews, addToBookmarkedNews, removeFromBookmarkedNews, bookmarkedNews }: NewsListProps) {
   const [newsList, setNewsList] = useState<Array<NewsType>>([])
   const [page, setPage] = useState<number>(1)
-  const [newsComponents, setNewsComponents] = useState<Array<React.ReactNode>>([])
 
   const handelInfiniteScroll = async () => {
     try {
@@ -116,24 +115,6 @@ function NewsList({ searchNews, addToBookmarkedNews, removeFromBookmarkedNews, b
   }, [searchNews])
 
   const isNewsBookmarked = (news: NewsType) => bookmarkedNews.filter( bookmarkedNews => bookmarkedNews.title === news.title).length > 0
-  
-  useEffect(() => {
-    setNewsComponents(newsList.map( news =>
-      <div key={news.url} >
-        <button onClick={() => isNewsBookmarked(news) ? removeFromBookmarkedNews(news) : addToBookmarkedNews(news)}>
-          { isNewsBookmarked(news) ? "Unbookmark" : "Bookmark"}
-        </button>
-        <li
-        onClick={() => {
-          window.location.href = news.url
-          }}
-        >
-          <News news={news}/>
-        </li>
-        <hr />
-      </div>
-    ))
-  }, [bookmarkedNews, newsList])
 
   return (
     <div>
@@ -141,7 +122,23 @@ function NewsList({ searchNews, addToBookmarkedNews, removeFromBookmarkedNews, b
         <ul style={{
           listStyle: 'none'
         }}>
-          {newsComponents}
+          {
+            newsList.map( news =>
+              <div key={news.url} >
+                <button onClick={() => isNewsBookmarked(news) ? removeFromBookmarkedNews(news) : addToBookmarkedNews(news)}>
+                  { isNewsBookmarked(news) ? "Unbookmark" : "Bookmark"}
+                </button>
+                <li
+                onClick={() => {
+                  window.location.href = news.url
+                  }}
+                >
+                  <News news={news}/>
+                </li>
+                <hr />
+              </div>
+            )
+          }
         </ul>
       }
     </div>
