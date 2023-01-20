@@ -1,17 +1,25 @@
-import { useState } from 'react';
 import './App.css';
-import NewsList from './components/NewsList';
+import Home from './components/Home';
+import { Provider } from "react-redux";
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import BookmarkedNews from './components/BookmarkedNews';
+import store from './redux/store';
 
 function App() {
-  const [search, setSearch] = useState("")
-  return (
-    <div className="App">
-      <label htmlFor='search'> Search Headlines:
-        <input id="search" type="text" value={search} onChange={(event) =>  setSearch(event.target.value)}></input>
-      </label>
-      <NewsList searchNews={search}/>
-    </div>
-  );
+  return(
+    <Provider store={store}>
+      <>
+        <Router>
+          <div className='App'>
+            <Switch>
+              <Route exact path="/" component={Home}/>
+              <Route exact path="/bookmarked" component={BookmarkedNews}/>
+            </Switch>
+          </div>
+        </Router>
+      </>
+    </Provider> 
+  )
 }
 
 export default App;

@@ -2,14 +2,31 @@ import { useEffect, useState } from 'react'
 import NewsType from '../types/NewsType'
 import News from './News'
 import { getNewsHeadlines } from '../data/NewsApi'
+import { addToBookmark, removeFromBookmark } from '../redux/actions/bookmarkNewsActions'
+import { connect, ConnectedProps } from 'react-redux'
+import BookmarkedNewsStateType from '../types/BookmarkedNewsStateType';
 
-interface NewsListProps {
-  searchNews: string
+
+const mapDispatchToProps = {
+  addToBookmarkedNews: addToBookmark,
+  removeFromBookmarkedNews: removeFromBookmark
 }
+
+const mapStateToProps = (state: BookmarkedNewsStateType) => {
+  return {
+    bookmarkedNews: state.bookmarkedNews
+  }
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps)
+
+type NewsListProps = {
+  searchNews: string
+} & ConnectedProps<typeof connector>;
 
 const PAGESIZE = 10
 
-export default function NewsList({ searchNews }: NewsListProps) {
+function NewsList({ searchNews, addToBookmarkedNews, removeFromBookmarkedNews, bookmarkedNews }: NewsListProps) {
   const [newsList, setNewsList] = useState<Array<NewsType>>([])
   const [page, setPage] = useState<number>(1)
 
@@ -97,26 +114,35 @@ export default function NewsList({ searchNews }: NewsListProps) {
     }
   }, [searchNews])
 
+  const isNewsBookmarked = (news: NewsType) => bookmarkedNews.filter( bookmarkedNews => bookmarkedNews.title === news.title).length > 0
+
   return (
     <div>
       {newsList.length === 0 ? <p>no news</p> :
         <ul style={{
           listStyle: 'none'
         }}>
-          {newsList.map( news => 
-            <div key={news.url} >
-              <li  
-              onClick={() => {
-                window.location.href = news.url
-                }}
-              >
-                <News news={news}/>
-              </li>
-              <hr />
-            </div>
-          )}
+          {
+            newsList.map( news =>
+              <div key={news.url} >
+                <button onClick={() => isNewsBookmarked(news) ? removeFromBookmarkedNews(news) : addToBookmarkedNews(news)}>
+                  { isNewsBookmarked(news) ? "Unbookmark" : "Bookmark"}
+                </button>
+                <li
+                onClick={() => {
+                  window.location.href = news.url
+                  }}
+                >
+                  <News news={news}/>
+                </li>
+                <hr />
+              </div>
+            )
+          }
         </ul>
       }
     </div>
   )
 }
+
+export default connector(NewsList)
